@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@style/NowPlaying">
+        
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/music_file_name_label" />
+	    
+	    <TextView android:id="@+id/music_file_name"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1" />
+	    
+    </LinearLayout>
+    
+    <ListView android:id="@+id/music_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#006600">
+        
+    </ListView>
+    
+    <SeekBar 
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/music_controls_bg"
+        android:orientation="horizontal" >
+        
+        <Button
+            android:id="@+id/music_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/music_play"
+            android:onClick="onPlayPress"
+            style="@style/Controls" />
+        
+        <Button
+            android:id="@+id/music_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/music_prev"
+            android:onClick="onPrevPress"
+            style="@style/Controls" />
+        
+        <Button
+            android:id="@+id/music_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/music_next"
+            android:onClick="onNextPress"
+            style="@style/Controls" />
+        
+        
+        <TextView android:id="@+id/music_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/music_time"
+            style="@style/Controls"/>
+        
+    </LinearLayout>
+    
+</LinearLayout>

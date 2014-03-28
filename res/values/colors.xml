@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="music_controls_bg">#110066</color>
+    <color name="music_controls_font">#ffffff</color>
+    <color name="nowplaying_font">#000000</color>
+    
+</resources>
