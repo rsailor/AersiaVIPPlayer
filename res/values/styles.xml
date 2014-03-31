@@ -26,5 +26,15 @@
     <style name="NowPlaying" parent="AppTheme">
         <item name="android:textColor">@color/nowplaying_font</item>
     </style>
+    
+    <style name="MusicListItem" parent="AppTheme">
+        <item name="android:background">@color/music_list_item_bg</item>
+        <item name="android:textColor">@color/music_list_item_text</item>
+    </style>
+    
+    <style name="MusicListItemSelected" parent="AppTheme">
+        <item name="android:background">@color/music_list_item_bg_sel</item>
+        <item name="android:textColor">@color/music_list_item_text_sel</item>
+    </style>
 
 </resources>

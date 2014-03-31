@@ -5,29 +5,12 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="@style/NowPlaying">
-        
-	    <TextView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/music_file_name_label" />
-	    
-	    <TextView android:id="@+id/music_file_name"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1" />
-	    
-    </LinearLayout>
     
     <ListView android:id="@+id/music_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#006600">
+        android:background="@color/music_list_bg">
         
     </ListView>
     

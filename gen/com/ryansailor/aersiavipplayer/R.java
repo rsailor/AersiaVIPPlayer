@@ -13,6 +13,11 @@ public final class R {
     public static final class color {
         public static final int music_controls_bg=0x7f040000;
         public static final int music_controls_font=0x7f040001;
+        public static final int music_list_bg=0x7f040003;
+        public static final int music_list_item_bg=0x7f040004;
+        public static final int music_list_item_bg_sel=0x7f040006;
+        public static final int music_list_item_text=0x7f040005;
+        public static final int music_list_item_text_sel=0x7f040007;
         public static final int nowplaying_font=0x7f040002;
     }
     public static final class dimen {
@@ -29,14 +34,13 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f090007;
-        public static final int music_file_name=0x7f090000;
-        public static final int music_list=0x7f090001;
-        public static final int music_next=0x7f090005;
-        public static final int music_play=0x7f090003;
-        public static final int music_prev=0x7f090004;
-        public static final int music_time=0x7f090006;
-        public static final int seekbar=0x7f090002;
+        public static final int action_settings=0x7f090006;
+        public static final int music_list=0x7f090000;
+        public static final int music_next=0x7f090004;
+        public static final int music_play=0x7f090002;
+        public static final int music_prev=0x7f090003;
+        public static final int music_time=0x7f090005;
+        public static final int seekbar=0x7f090001;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -49,12 +53,11 @@ public final class R {
         public static final int action_quit=0x7f060002;
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int music_file_name_label=0x7f060003;
-        public static final int music_next=0x7f060007;
-        public static final int music_pause=0x7f060005;
-        public static final int music_play=0x7f060004;
-        public static final int music_prev=0x7f060006;
-        public static final int music_time=0x7f060008;
+        public static final int music_next=0x7f060006;
+        public static final int music_pause=0x7f060004;
+        public static final int music_play=0x7f060003;
+        public static final int music_prev=0x7f060005;
+        public static final int music_time=0x7f060007;
     }
     public static final class style {
         /** 
@@ -83,6 +86,8 @@ public final class R {
          */
         public static final int AppTheme=0x7f070001;
         public static final int Controls=0x7f070002;
+        public static final int MusicListItem=0x7f070004;
+        public static final int MusicListItemSelected=0x7f070005;
         public static final int NowPlaying=0x7f070003;
     }
 }

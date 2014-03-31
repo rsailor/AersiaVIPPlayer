@@ -1,17 +1,19 @@
 package com.ryansailor.aersiavipplayer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -26,17 +28,53 @@ public class MainActivity extends Activity implements
 	public final static String TAG = "AersiaVIPPlayer";
 	
 	/* Media Player */
-	ComplexMediaPlayer mp;
+	private ComplexMediaPlayer mp;
 	
 	/* UI */
-	TextView nowPlaying;
-	Button playButton;
-	TextView trackTime;
+	private Button playButton;
+	private TextView trackTime;
+	private ListView trackList;
+	private int selectedTrack;
 	
 	private SeekBar seekBarProgress;
 	private final Handler seekHandler = new Handler();
 	
-	ArrayAdapter<String> musicListAdapter;
+	
+	private class SelectionArrayAdapter extends ArrayAdapter<String> {
+		private final Context context;
+		private int resource;
+		private int selection;
+		
+		public SelectionArrayAdapter(Context context, int resource) {
+			super(context, R.layout.music_listing_item, resource);
+			this.context = context;
+			this.resource = resource;
+			this.selection = -1;
+		}
+		
+		public void setSelection(int pos) {
+			selection = pos;
+		}
+		
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			TextView rowView = (TextView) inflater.inflate(this.resource, parent, false);
+			rowView.setText(this.getItem(position));
+			if(position == selection) {
+				rowView.setBackgroundColor(getResources().getColor(R.color.music_list_item_bg_sel));
+				rowView.setTextColor(getResources().getColor(R.color.music_list_item_text_sel));
+			} else {
+				rowView.setBackgroundColor(getResources().getColor(R.color.music_list_item_bg));
+				rowView.setTextColor(getResources().getColor(R.color.music_list_item_text));
+			}
+			return rowView;
+		}
+		
+	}
+	
+	
+	SelectionArrayAdapter musicListAdapter;
 	
 	private Handler trackTimeHandler = new Handler(Looper.getMainLooper());
 	private final Runnable r = new Runnable() {
@@ -78,8 +116,9 @@ public class MainActivity extends Activity implements
 		
 		// UI Setup
 		playButton = (Button) findViewById(R.id.music_play);		
-		nowPlaying = (TextView) findViewById(R.id.music_file_name);
 		trackTime = (TextView) findViewById(R.id.music_time);
+		trackList = (ListView) findViewById(R.id.music_list);
+		selectedTrack = -1;
 		
 		seekBarProgress = (SeekBar) findViewById(R.id.seekbar);
 		seekBarProgress.setMax(99);
@@ -89,10 +128,9 @@ public class MainActivity extends Activity implements
 		
 				
 		// Song List Setup
-		musicListAdapter = new ArrayAdapter<String>(this, R.layout.music_listing_item);
-		ListView listView = (ListView) findViewById(R.id.music_list);
-		listView.setAdapter(musicListAdapter);
-		listView.setOnItemClickListener(this);
+		musicListAdapter = new SelectionArrayAdapter(this, R.layout.music_listing_item);
+		trackList.setAdapter(musicListAdapter);
+		trackList.setOnItemClickListener(this);
 		
 		// Get URL list
 		MagicLinkParser mlp = new MagicLinkParser();
@@ -191,7 +229,6 @@ public class MainActivity extends Activity implements
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		trackTimeHandler.removeCallbacks(r);
 		mp.playThis(pos);
-		updateUINowPlaying();
 		setUIPlay();
 	}
 	
@@ -204,7 +241,6 @@ public class MainActivity extends Activity implements
 		// Select random music
 		trackTimeHandler.removeCallbacks(r);
 		mp.playRandom();
-		updateUINowPlaying();
 		setUIPlay();
 	}
 	
@@ -246,7 +282,14 @@ public class MainActivity extends Activity implements
 	}
 	
 	private void updateUINowPlaying() {
-		nowPlaying.setText(mp.getNowPlayingName());
+
+		// update selected and change color
+		selectedTrack = mp.getNowPlayingIndex();
+		musicListAdapter.setSelection(selectedTrack);
+		musicListAdapter.notifyDataSetChanged();
+		
+		// scroll to selected
+		trackList.smoothScrollToPositionFromTop(selectedTrack,0,1000);
 	}
 	
 	private void setUIPlay() {

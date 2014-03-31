@@ -10,7 +10,8 @@ public class MusicFileFilter implements FilenameFilter {
 	private static String extensions[] = {
 			"ogg",
 			"m4a",
-			"mp3"
+			"mp3",
+			"aac"
 	};
 	
 	@SuppressLint("DefaultLocale")
