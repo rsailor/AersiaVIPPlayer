@@ -1,5 +1,6 @@
 package com.ryansailor.aersiavipplayer;
 
+import wseemann.media.FFmpegMediaMetadataRetriever;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -7,6 +8,7 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements 
-	OnItemClickListener, OnMagicLinkParserReadyListener, OnComplexMediaPlayerPreparedListener, OnTouchListener, OnBufferingUpdateListener {
+	OnItemClickListener, OnMagicLinkParserReadyListener, OnComplexMediaPlayerListener, OnTouchListener, OnBufferingUpdateListener {
 
 	public final static String TAG = "AersiaVIPPlayer";
 	
@@ -31,7 +33,8 @@ public class MainActivity extends Activity implements
 	private ComplexMediaPlayer mp;
 	
 	/* UI */
-	private Button playButton;
+	
+	private MenuItem playButton;
 	private TextView trackTime;
 	private ListView trackList;
 	private int selectedTrack;
@@ -103,19 +106,16 @@ public class MainActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		// Build Media Player
 		mp = new ComplexMediaPlayer();
 		
-		mp.setOnComplexMediaPlayerPreparedListener(this);
+		mp.setOnComplexMediaPlayerListener(this);
 		mp.setOnBufferingUpdateListener(this);
 		// Setup static folder path
-		//String musicPath = "/Music/Europa Universalis IV/";
+
 		
-		//mp.loadLocalDirectory(musicPath);
-		
-		// UI Setup
-		playButton = (Button) findViewById(R.id.music_play);		
+		// UI Setup	
 		trackTime = (TextView) findViewById(R.id.music_time);
 		trackList = (ListView) findViewById(R.id.music_list);
 		selectedTrack = -1;
@@ -123,9 +123,6 @@ public class MainActivity extends Activity implements
 		seekBarProgress = (SeekBar) findViewById(R.id.seekbar);
 		seekBarProgress.setMax(99);
 		seekBarProgress.setOnTouchListener(this);
-		
-		//TODO: target for resource control
-		
 				
 		// Song List Setup
 		musicListAdapter = new SelectionArrayAdapter(this, R.layout.music_listing_item);
@@ -149,13 +146,22 @@ public class MainActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		playButton = menu.findItem(R.id.action_play);
 		return true;
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 	    switch (item.getItemId()) {
-	        
+	    	case R.id.action_play:
+	    		onPlayPress();
+	    		return true;
+	    	case R.id.action_next:
+	    		onNextPress();
+	    		return true;
+	    	case R.id.action_prev:
+	    		onPrevPress();
+	    		return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -170,7 +176,9 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onStart() {
 		super.onStart();
-		trackTimeHandler.post(r);
+		if(mp.isPlaying()) {
+			trackTimeHandler.post(r);
+		}
 	}
 	
 	/*
@@ -193,7 +201,7 @@ public class MainActivity extends Activity implements
 		setUIPause();
 	}
 	
-	public void onPlayPress(View view) {
+	public void onPlayPress() {
 		primarySeekBarProgressUpdater();
 		if(mp.isPlaying()) {
 			setPause();
@@ -202,14 +210,14 @@ public class MainActivity extends Activity implements
 		}
 	}
 	
-	public void onPrevPress(View view) {
+	public void onPrevPress() {
 		trackTimeHandler.removeCallbacks(r);
 		mp.playPrevious();
 		updateUINowPlaying();
 		setUIPlay();
 	}
 	
-	public void onNextPress(View view) {
+	public void onNextPress() {
 		trackTimeHandler.removeCallbacks(r);
 		mp.playNext();
 		updateUINowPlaying();
@@ -235,20 +243,23 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onMagicLinkParserReady(String[] results) {
 		mp.loadURLs(results);
-		
+	}
+	
+	@Override
+	public void onComplexMediaPlayerBeginStream() {
+		updateUINowPlaying();
+		trackTimeHandler.post(r);
+		primarySeekBarProgressUpdater();
+	}
+	
+	@Override
+	public void onComplexMediaPlayerLoaded() {
 		musicListAdapter.addAll(mp.getMusicNames());
 		
 		// Select random music
 		trackTimeHandler.removeCallbacks(r);
 		mp.playRandom();
 		setUIPlay();
-	}
-	
-	@Override
-	public void onComplexMediaPlayerPrepared() {
-		updateUINowPlaying();
-		trackTimeHandler.post(r);
-		primarySeekBarProgressUpdater();
 	}
 	
 	@Override
@@ -293,11 +304,11 @@ public class MainActivity extends Activity implements
 	}
 	
 	private void setUIPlay() {
-		playButton.setText(R.string.music_pause);
+		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_pause));
 	}
 	
 	private void setUIPause() {
-		playButton.setText(R.string.music_play);
+		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
 	}
 
 	@Override

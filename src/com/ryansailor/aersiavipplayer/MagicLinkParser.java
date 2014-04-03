@@ -65,7 +65,7 @@ public class MagicLinkParser {
 	}
 	
 	public void parse(String _url) {
-		new GetURLsTask().execute("http://vip.aersia.net/mu/");	
+		new GetURLsTask().execute(_url);	
 	}
 	
 	public void setOnComplexMediaUpdateListener(OnMagicLinkParserReadyListener listener) {

@@ -25,29 +25,8 @@
         android:background="@color/music_controls_bg"
         android:orientation="horizontal" >
         
-        <Button
-            android:id="@+id/music_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/music_play"
-            android:onClick="onPlayPress"
-            style="@style/Controls" />
         
-        <Button
-            android:id="@+id/music_prev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/music_prev"
-            android:onClick="onPrevPress"
-            style="@style/Controls" />
-        
-        <Button
-            android:id="@+id/music_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/music_next"
-            android:onClick="onNextPress"
-            style="@style/Controls" />
+
         
         
         <TextView android:id="@+id/music_time"

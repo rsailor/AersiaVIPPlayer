@@ -1,5 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item android:id="@+id/action_play"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_play"
+        android:title="@string/music_play" />
+    
+    <item android:id="@+id/action_prev"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_previous"
+        android:title="@string/music_prev" />
+    
+    <item android:id="@+id/action_next"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_next"
+        android:title="@string/music_next" />
+    
     <item
         android:id="@+id/action_settings"
         android:showAsAction="never"

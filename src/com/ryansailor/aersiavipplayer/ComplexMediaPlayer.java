@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import wseemann.media.FFmpegMediaMetadataRetriever;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
@@ -11,7 +12,9 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListener, OnSeekCompleteListener{
 	
@@ -19,7 +22,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	
 	private MediaPlayer mp;
 	
-	private OnComplexMediaPlayerPreparedListener prepListener;
+	private OnComplexMediaPlayerListener mpListener;
 	
 	private String parentPath;
 	private MusicFile[] music;
@@ -51,6 +54,44 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		public String getPath() { return path; }
 		public String getName() { return name; }
 	};
+	
+	private class GetMetaData extends AsyncTask<String, Void, MusicFile[]> {
+		
+		@Override
+		protected MusicFile[] doInBackground(String... strings) {
+			String[] paths = strings;
+			
+			ArrayList<MusicFile> musicList = new ArrayList<MusicFile>();
+
+			//FFmpegMediaMetadataRetriever meta = new FFmpegMediaMetadataRetriever();
+			String path, trackname;
+			
+			for(int i = 0; i < paths.length; i++) {
+				path = paths[i];
+
+				if(MusicFileFilter.accept(path)) {
+					//meta.setDataSource(path);
+					//trackname = meta.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_TRACK);
+					trackname = Uri.parse(path).getLastPathSegment().toString();
+					musicList.add(new MusicFile(path,trackname));
+				}
+			}
+			
+			//meta.release();
+			MusicFile[] musicArray = musicList.toArray(new MusicFile[musicList.size()]);
+			
+			
+			return musicArray;
+		}
+		
+		protected void onPostExecute(MusicFile[] musicArray) {
+			music = musicArray;
+			if(mpListener != null) {
+				mpListener.onComplexMediaPlayerLoaded();
+			}
+		}
+	}
+	
 
 	public ComplexMediaPlayer() {
 		// Build Media Player
@@ -81,9 +122,6 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		return tempArray;
 	}
 	
-	public String getParentPath() {
-		return parentPath;
-	}
 	
 	public int getNowPlayingIndex() {
 		return currentSelection;
@@ -93,12 +131,31 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		return music[currentSelection].getName();
 	}
 	
+	public int getTrackTotalTime() {
+		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.PAUSED 
+				|| state == STATE.PLAYBACK_COMPLETE || state == STATE.STOPPED) {
+			return mp.getDuration();
+		} else {
+			return 0;
+		}
+	}
+	
+	public int getTrackCurrentTime() {
+		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.PAUSED 
+				|| state == STATE.PLAYBACK_COMPLETE || state == STATE.STOPPED || state == STATE.IDLE
+				|| state == STATE.INITIALIZED) {
+			return mp.getCurrentPosition();
+		} else {
+			return 0;
+		}
+	}
+	
 	/*
 	 * SETTERS
 	 */
 	
-	public void setOnComplexMediaPlayerPreparedListener(OnComplexMediaPlayerPreparedListener listener) {
-		prepListener = listener;
+	public void setOnComplexMediaPlayerListener(OnComplexMediaPlayerListener listener) {
+		mpListener = listener;
 	}
 	
 	public void setOnBufferingUpdateListener(OnBufferingUpdateListener listener) {
@@ -153,21 +210,30 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	}
 	
 	public void loadURLs(String[] urls) {
+		GetMetaData gmd = new GetMetaData();
+		gmd.execute(urls);
+		
+		
+		/*
 		ArrayList<MusicFile> temp = new ArrayList<MusicFile>();
+		MediaMetadataRetriever meta = new MediaMetadataRetriever();
 		Uri uri;
-		String urifull;
+		String urifull, trackname;
 		parentPath = null;
 		for(int i = 0; i < urls.length; i++) {
 			uri = Uri.parse(urls[i]);
 			urifull = uri.toString();
 			if(MusicFileFilter.accept(urifull)) {
-				temp.add(new MusicFile(urifull,uri.getLastPathSegment()));
+				meta.setDataSource(urifull);
+				trackname = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+				temp.add(new MusicFile(urifull,trackname));
 			}
 		}
-		
+		meta.release();
 		MusicFile[] musicArray = temp.toArray(new MusicFile[temp.size()]);
 		
 		music = musicArray;
+		*/
 	}
 	
 	/**
@@ -232,24 +298,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		return shuffle;
 	}
 	
-	public int getTrackTotalTime() {
-		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.PAUSED 
-				|| state == STATE.PLAYBACK_COMPLETE || state == STATE.STOPPED) {
-			return mp.getDuration();
-		} else {
-			return 0;
-		}
-	}
-	
-	public int getTrackCurrentTime() {
-		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.PAUSED 
-				|| state == STATE.PLAYBACK_COMPLETE || state == STATE.STOPPED || state == STATE.IDLE
-				|| state == STATE.INITIALIZED) {
-			return mp.getCurrentPosition();
-		} else {
-			return 0;
-		}
-	}
+
 	
 	/**
 	 * Seek to specific time in track. Will do nothing if msecs is outside of track time range.
@@ -293,14 +342,14 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	
 	@Override
 	public void onSeekComplete(MediaPlayer arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void onPrepared(MediaPlayer arg0) {
 		state = STATE.PREPARED;
 		play();
-		prepListener.onComplexMediaPlayerPrepared();
+		mpListener.onComplexMediaPlayerBeginStream();
 	}
 
 	@Override
