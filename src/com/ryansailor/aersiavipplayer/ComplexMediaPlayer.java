@@ -28,6 +28,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	private MusicFile[] music;
 	private int currentSelection;
 	private boolean shuffle;
+	private int seekTime;
 	
 	private STATE state;
 	
@@ -39,7 +40,8 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		STOPPED,
 		PAUSED,
 		PLAYBACK_COMPLETE,
-		PREPARING
+		PREPARING,
+		NULL
 	}
 	
 	protected class MusicFile {
@@ -105,6 +107,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		// Property Setup
 		currentSelection = -1;
 		shuffle = true;
+		seekTime = -1;
 	}
 	
 	/*
@@ -212,39 +215,8 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	public void loadURLs(String[] urls) {
 		GetMetaData gmd = new GetMetaData();
 		gmd.execute(urls);
-		
-		
-		/*
-		ArrayList<MusicFile> temp = new ArrayList<MusicFile>();
-		MediaMetadataRetriever meta = new MediaMetadataRetriever();
-		Uri uri;
-		String urifull, trackname;
-		parentPath = null;
-		for(int i = 0; i < urls.length; i++) {
-			uri = Uri.parse(urls[i]);
-			urifull = uri.toString();
-			if(MusicFileFilter.accept(urifull)) {
-				meta.setDataSource(urifull);
-				trackname = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-				temp.add(new MusicFile(urifull,trackname));
-			}
-		}
-		meta.release();
-		MusicFile[] musicArray = temp.toArray(new MusicFile[temp.size()]);
-		
-		music = musicArray;
-		*/
 	}
 	
-	/**
-	 * Used to load a page of music file links.
-	 * Will attempt to capture every direct link by parsing file extension, 
-	 * but does not check if link is proper music file.
-	 * @param url
-	 */
-	public void loadLinkPage(String url) {
-		
-	}
 	
 	/*
 	 * PLAYBACK CONTROL
@@ -262,6 +234,21 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		if(state == STATE.STARTED || state == STATE.PAUSED || state == STATE.PLAYBACK_COMPLETE) {
 			mp.pause();
 			state = STATE.PAUSED;
+		}
+	}
+	
+	public void stop() {
+		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.STOPPED || state == STATE.PAUSED ||
+				state == STATE.PLAYBACK_COMPLETE) {
+			mp.stop();
+			state = STATE.STOPPED;
+		}
+	}
+	
+	public void setVolume(float leftVolume, float rightVolume) {
+		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.STOPPED || state == STATE.PAUSED ||
+				state == STATE.PLAYBACK_COMPLETE || state == STATE.IDLE || state == STATE.INITIALIZED) {
+			mp.setVolume(leftVolume, rightVolume);
 		}
 	}
 	
@@ -284,6 +271,13 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	public void playThis(int index) {
 		if(index >= 0 && index < music.length && music.length > 0) {
 			beginStream(index);
+		}
+	}
+	
+	public void playThisAndSeek(int index,int time) {
+		if(index >= 0 && index < music.length && music.length > 0) {
+			beginStream(index);
+			seekTime = time;
 		}
 	}
 	
@@ -313,7 +307,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	}
 	
 	private void beginStream(int index) {
-		if(state != STATE.PREPARING) {
+		if(state != STATE.PREPARING && state != STATE.NULL) {
 			String path = music[index].getPath();
 			try {
 				mp.reset();
@@ -335,6 +329,25 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		}
 	}
 	
+	public void releaseResources() {
+		if(state != STATE.NULL) {
+			mp.release();
+			mp = null;
+			state = STATE.NULL;
+		}
+	}
+	
+	public void restoreResources() {
+		if(state == STATE.NULL) {
+			mp = new MediaPlayer();
+			mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp.setOnCompletionListener(this);
+			mp.setOnPreparedListener(this);
+			mp.setOnSeekCompleteListener(this);
+			state = STATE.IDLE;
+		}
+	}
+	
 	
 	/*
 	 * LISTENER METHODS
@@ -349,6 +362,10 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	public void onPrepared(MediaPlayer arg0) {
 		state = STATE.PREPARED;
 		play();
+		if(seekTime > 0) {
+			seekTo(seekTime);
+			seekTime = -1;
+		}
 		mpListener.onComplexMediaPlayerBeginStream();
 	}
 

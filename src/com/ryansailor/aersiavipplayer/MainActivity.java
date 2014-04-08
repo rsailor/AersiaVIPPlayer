@@ -1,8 +1,10 @@
 package com.ryansailor.aersiavipplayer;
 
-import wseemann.media.FFmpegMediaMetadataRetriever;
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Bundle;
@@ -19,21 +21,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements 
-	OnItemClickListener, OnMagicLinkParserReadyListener, OnComplexMediaPlayerListener, OnTouchListener, OnBufferingUpdateListener {
+	OnItemClickListener, OnMagicLinkParserReadyListener, OnComplexMediaPlayerListener, OnTouchListener, OnBufferingUpdateListener, OnAudioFocusChangeListener {
 
 	public final static String TAG = "AersiaVIPPlayer";
 	
 	/* Media Player */
 	private ComplexMediaPlayer mp;
 	
-	/* UI */
+	int trackCurrentTime;
+	int trackTotalTime;
 	
+	
+	/* UI */
 	private MenuItem playButton;
 	private TextView trackTime;
 	private ListView trackList;
@@ -42,6 +46,23 @@ public class MainActivity extends Activity implements
 	private SeekBar seekBarProgress;
 	private final Handler seekHandler = new Handler();
 	
+	/* Notification */
+	Notification notification;
+	
+	/* System Services */
+	AudioManager audioManager;
+	
+	/* Data */
+	String[] parsedMusicPaths;
+	
+	
+	/*
+	 * 
+	 * 
+	 * CLASSES AND HANDLERS
+	 * 
+	 * 
+	 */
 	
 	private class SelectionArrayAdapter extends ArrayAdapter<String> {
 		private final Context context;
@@ -112,8 +133,14 @@ public class MainActivity extends Activity implements
 		
 		mp.setOnComplexMediaPlayerListener(this);
 		mp.setOnBufferingUpdateListener(this);
-		// Setup static folder path
-
+		
+		// Audio Manager 
+		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		
+		if(result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+			// TODO: If Audio Focus is not granted at startup
+		}
 		
 		// UI Setup	
 		trackTime = (TextView) findViewById(R.id.music_time);
@@ -139,7 +166,8 @@ public class MainActivity extends Activity implements
 	public void onDestroy() {
 		super.onDestroy();
 		trackTimeHandler.removeCallbacks(r);
-		mp.destroy();
+		if(mp != null)
+			mp.destroy();
 	}
 
 	@Override
@@ -242,6 +270,7 @@ public class MainActivity extends Activity implements
 	
 	@Override
 	public void onMagicLinkParserReady(String[] results) {
+		parsedMusicPaths = results;
 		mp.loadURLs(results);
 	}
 	
@@ -271,6 +300,39 @@ public class MainActivity extends Activity implements
 		}
 		return false;
 	}
+	
+	@Override
+	public void onBufferingUpdate(MediaPlayer mp, int percent) {
+		seekBarProgress.setSecondaryProgress(percent);
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange) {
+		switch(focusChange) {
+			case AudioManager.AUDIOFOCUS_GAIN:
+				// Restore resources and resume playback
+				mp.restoreResources();
+				mp.playThisAndSeek(selectedTrack,trackCurrentTime);
+				break;
+			case AudioManager.AUDIOFOCUS_LOSS:
+				// Save state, release resources and stop playback
+				trackCurrentTime = mp.getTrackCurrentTime();
+				mp.releaseResources();				
+				break;
+			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+				// Save state and stop playback
+				trackCurrentTime = mp.getTrackCurrentTime();
+				mp.stop();
+				break;
+			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+				// Lower volume
+				if(mp.isPlaying()) {
+					mp.setVolume(0.1f, 0.1f);
+				}
+				break;
+		}
+	}
+
 	
 	/*
 	 * 
@@ -311,10 +373,6 @@ public class MainActivity extends Activity implements
 		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
 	}
 
-	@Override
-	public void onBufferingUpdate(MediaPlayer mp, int percent) {
-		seekBarProgress.setSecondaryProgress(percent);
-	}
 
 
 
