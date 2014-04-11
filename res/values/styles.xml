@@ -15,12 +15,22 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         
+        <item name="android:actionBarStyle">@style/ActionBar</item>
         
-        
+    </style>
+    
+    <style name="ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/actionbar_bg</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitle</item>  
+    </style>
+    
+    <style name="ActionBarTitle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/actionbar_text</item>
     </style>
     
     <style name="Controls" parent="AppTheme">
         <item name="android:textColor">@color/music_controls_font</item>
+        
     </style>
     
     <style name="NowPlaying" parent="AppTheme">
@@ -36,5 +46,7 @@
         <item name="android:background">@color/music_list_item_bg_sel</item>
         <item name="android:textColor">@color/music_list_item_text_sel</item>
     </style>
+    
+    
 
 </resources>

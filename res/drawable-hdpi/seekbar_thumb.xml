@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:shape="rectangle" >
+    <solid android:color="@color/seekbar_thumb" />
+    <size 
+        android:width="5dp"
+        android:height="15dp" />
+    <padding
+        android:top="15dp"/>
+</shape>
