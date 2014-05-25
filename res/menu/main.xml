@@ -15,9 +15,24 @@
         android:icon="@drawable/ic_action_next"
         android:title="@string/music_next" />
     
-    <item
-        android:id="@+id/action_settings"
+    <item 
+        android:id="@+id/playlist_vip"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/playlist_vip"/>
+    
+    <item 
+        android:id="@+id/playlist_mellow"
+        android:showAsAction="never"
+        android:title="@string/playlist_mellow"/>
+    
+    <item 
+        android:id="@+id/playlist_exiled"
+        android:showAsAction="never"
+        android:title="@string/playlist_exiled"/>
+    
+    <item 
+        android:id="@+id/playlist_source"
+        android:showAsAction="never"
+        android:title="@string/playlist_source"/>
 
 </menu>

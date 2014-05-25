@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements 
 	OnItemClickListener, OnMagicLinkParserReadyListener, OnComplexMediaPlayerListener, OnTouchListener, OnBufferingUpdateListener, OnAudioFocusChangeListener {
@@ -33,9 +34,18 @@ public class MainActivity extends Activity implements
 	/* Media Player */
 	private ComplexMediaPlayer mp;
 	
-	int trackCurrentTime;
-	int trackTotalTime;
+	private int trackCurrentTime;
+	private int trackTotalTime;
 	
+	private PLAYLISTID playlistId;
+	
+	private enum PLAYLISTID {
+		VIP,
+		MELLOW,
+		EXILED,
+		SOURCE
+	}
+
 	
 	/* UI */
 	private MenuItem playButton;
@@ -157,9 +167,8 @@ public class MainActivity extends Activity implements
 		trackList.setOnItemClickListener(this);
 		
 		// Get URL list
-		MagicLinkParser mlp = new MagicLinkParser();
-		mlp.setOnComplexMediaUpdateListener(this);
-		mlp.parse("http://vip.aersia.net/mu/");
+		playlistId = PLAYLISTID.VIP;
+		startNewPlaylist("Now Playing VIP original",PLAYLISTID.VIP,"http://vip.aersia.net/mu/");
 	}
 	
 	@Override
@@ -189,6 +198,34 @@ public class MainActivity extends Activity implements
 	    		return true;
 	    	case R.id.action_prev:
 	    		onPrevPress();
+	    		return true;
+	    	case R.id.playlist_vip:
+	    		if(playlistId != PLAYLISTID.VIP) {
+		    		startNewPlaylist("Now Playing VIP Original",
+		    				PLAYLISTID.VIP,
+		    				"http://vip.aersia.net/mu/");
+	    		}
+	    		return true;
+	    	case R.id.playlist_mellow:
+	    		if(playlistId != PLAYLISTID.MELLOW) {
+	    			startNewPlaylist("Now Playing VIP Mellow",
+	    					PLAYLISTID.MELLOW,
+	    					"http://vip.aersia.net/mu/mellow/");
+	    		}
+	    		return true;
+	    	case R.id.playlist_exiled:
+	    		if(playlistId != PLAYLISTID.EXILED) {
+	    			startNewPlaylist("Now Playing VIP Exiled",
+	    					PLAYLISTID.EXILED,
+	    					"http://vip.aersia.net/mu/exiled/");
+	    		}
+	    		return true;
+	    	case R.id.playlist_source:
+	    		if(playlistId != PLAYLISTID.SOURCE) {
+	    			startNewPlaylist("Now Playing VIP Source",
+	    					PLAYLISTID.SOURCE,
+	    					"http://vip.aersia.net/mu/source/");
+	    		}
 	    		return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -283,6 +320,7 @@ public class MainActivity extends Activity implements
 	
 	@Override
 	public void onComplexMediaPlayerLoaded() {
+		musicListAdapter.clear();
 		musicListAdapter.addAll(mp.getMusicNames());
 		
 		// Select random music
@@ -373,7 +411,15 @@ public class MainActivity extends Activity implements
 		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
 	}
 
-
+	private void startNewPlaylist(String msg, PLAYLISTID id, String loc) {
+		mp.stop();
+		playlistId = id;
+		// Get URL list
+		MagicLinkParser mlp = new MagicLinkParser();
+		mlp.setOnComplexMediaUpdateListener(this);
+		mlp.parse(loc);
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+	}
 
 
 	

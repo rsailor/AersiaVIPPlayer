@@ -4,6 +4,10 @@
     <string name="app_name">AersiaVIPPlayer</string>
     <string name="action_settings">Settings</string>
     <string name="action_quit">Quit</string>
+    <string name="playlist_vip">VIP</string>
+    <string name="playlist_mellow">VIP Mellow</string>
+    <string name="playlist_exiled">VIP Exiled</string>
+    <string name="playlist_source">VIP Source</string>
     
 	<string name="music_play">Play</string>
 	<string name="music_pause">Pause</string>

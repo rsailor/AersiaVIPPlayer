@@ -51,9 +51,12 @@ public final class R {
         public static final int action_next=0x7f090005;
         public static final int action_play=0x7f090003;
         public static final int action_prev=0x7f090004;
-        public static final int action_settings=0x7f090006;
         public static final int music_list=0x7f090000;
         public static final int music_time=0x7f090002;
+        public static final int playlist_exiled=0x7f090008;
+        public static final int playlist_mellow=0x7f090007;
+        public static final int playlist_source=0x7f090009;
+        public static final int playlist_vip=0x7f090006;
         public static final int seekbar=0x7f090001;
     }
     public static final class layout {
@@ -67,11 +70,15 @@ public final class R {
         public static final int action_quit=0x7f060002;
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int music_next=0x7f060006;
-        public static final int music_pause=0x7f060004;
-        public static final int music_play=0x7f060003;
-        public static final int music_prev=0x7f060005;
-        public static final int music_time=0x7f060007;
+        public static final int music_next=0x7f06000a;
+        public static final int music_pause=0x7f060008;
+        public static final int music_play=0x7f060007;
+        public static final int music_prev=0x7f060009;
+        public static final int music_time=0x7f06000b;
+        public static final int playlist_exiled=0x7f060005;
+        public static final int playlist_mellow=0x7f060004;
+        public static final int playlist_source=0x7f060006;
+        public static final int playlist_vip=0x7f060003;
     }
     public static final class style {
         public static final int ActionBar=0x7f070002;
