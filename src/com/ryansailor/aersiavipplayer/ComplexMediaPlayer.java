@@ -170,11 +170,11 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	 */
 	
 	public boolean isPlaying() {
-		if(state == STATE.PREPARING) {
-			return false;
-		} else {
-			return mp.isPlaying();
+		boolean isPlaying = false;
+		if(state != STATE.PREPARING && mp != null) {
+			isPlaying = mp.isPlaying();
 		}
+		return isPlaying;
 	}
 	
 	/*

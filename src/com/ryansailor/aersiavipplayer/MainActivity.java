@@ -268,8 +268,9 @@ public class MainActivity extends Activity implements
 	public void onStart() {
 		super.onStart();
 		if(mp.isPlaying()) {
-			trackTimeHandler.post(r);
+			trackTimeHandler.post(r);	
 		}
+		mp.restoreResources();
 	}
 	
 	/*
@@ -381,12 +382,14 @@ public class MainActivity extends Activity implements
 			case AudioManager.AUDIOFOCUS_LOSS:
 				// Save state, release resources and stop playback
 				trackCurrentTime = mp.getTrackCurrentTime();
-				mp.releaseResources();				
+				mp.releaseResources();
+				setUIPause();
 				break;
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 				// Save state and stop playback
 				trackCurrentTime = mp.getTrackCurrentTime();
 				mp.stop();
+				setUIPause();
 				break;
 			case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
 				// Lower volume
