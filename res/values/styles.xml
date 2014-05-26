@@ -35,6 +35,7 @@
     
     <style name="NowPlaying" parent="AppTheme">
         <item name="android:textColor">@color/nowplaying_font</item>
+        <item name="android:background">@color/nowplaying_bg</item>
     </style>
     
     <style name="MusicListItem" parent="AppTheme">

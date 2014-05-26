@@ -15,18 +15,19 @@ public final class R {
         public static final int actionbar_text=0x7f040001;
         public static final int music_controls_bg=0x7f040002;
         public static final int music_controls_font=0x7f040003;
-        public static final int music_list_bg=0x7f040005;
-        public static final int music_list_item_bg=0x7f040006;
-        public static final int music_list_item_bg_sel=0x7f040008;
-        public static final int music_list_item_text=0x7f040007;
-        public static final int music_list_item_text_sel=0x7f040009;
+        public static final int music_list_bg=0x7f040006;
+        public static final int music_list_item_bg=0x7f040007;
+        public static final int music_list_item_bg_sel=0x7f040009;
+        public static final int music_list_item_text=0x7f040008;
+        public static final int music_list_item_text_sel=0x7f04000a;
+        public static final int nowplaying_bg=0x7f040005;
         public static final int nowplaying_font=0x7f040004;
-        public static final int seekbar_background=0x7f04000e;
-        public static final int seekbar_empty=0x7f04000b;
-        public static final int seekbar_loaded=0x7f04000c;
-        public static final int seekbar_progress=0x7f04000d;
-        public static final int seekbar_thumb=0x7f04000a;
-        public static final int track_time_text=0x7f04000f;
+        public static final int seekbar_background=0x7f04000f;
+        public static final int seekbar_empty=0x7f04000c;
+        public static final int seekbar_loaded=0x7f04000d;
+        public static final int seekbar_progress=0x7f04000e;
+        public static final int seekbar_thumb=0x7f04000b;
+        public static final int track_time_text=0x7f040010;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -48,16 +49,17 @@ public final class R {
         public static final int seekbar_thumb=0x7f020006;
     }
     public static final class id {
-        public static final int action_next=0x7f090005;
-        public static final int action_play=0x7f090003;
-        public static final int action_prev=0x7f090004;
-        public static final int music_list=0x7f090000;
+        public static final int action_next=0x7f090006;
+        public static final int action_play=0x7f090004;
+        public static final int action_prev=0x7f090005;
+        public static final int music_list=0x7f090003;
         public static final int music_time=0x7f090002;
-        public static final int playlist_exiled=0x7f090008;
-        public static final int playlist_mellow=0x7f090007;
-        public static final int playlist_source=0x7f090009;
-        public static final int playlist_vip=0x7f090006;
+        public static final int playlist_exiled=0x7f090009;
+        public static final int playlist_mellow=0x7f090008;
+        public static final int playlist_source=0x7f09000a;
+        public static final int playlist_vip=0x7f090007;
         public static final int seekbar=0x7f090001;
+        public static final int trackname=0x7f090000;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

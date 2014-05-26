@@ -6,7 +6,8 @@
     
     <color name="music_controls_bg">#110066</color>
     <color name="music_controls_font">#ffffff</color>
-    <color name="nowplaying_font">#000000</color>
+    <color name="nowplaying_font">#FF7100</color>
+    <color name="nowplaying_bg">#110066</color>
     
     <color name="music_list_bg">#021848</color>
     <color name="music_list_item_bg">#06276F</color>
@@ -16,7 +17,7 @@
     
     <color name="seekbar_thumb">#FF7100</color>
     <color name="seekbar_empty">#182B53</color>
-    <color name="seekbar_loaded">#FFB173</color>
+    <color name="seekbar_loaded">#FFA964</color>
     <color name="seekbar_progress">#FF7100</color>
     <color name="seekbar_background">#021848</color>
     

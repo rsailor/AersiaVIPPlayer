@@ -37,7 +37,23 @@ public class MainActivity extends Activity implements
 	private int trackCurrentTime;
 	private int trackTotalTime;
 	
-	private PLAYLISTID playlistId;
+	
+	private class PlayList {
+		
+		private PLAYLISTID _id;
+		private String _location;
+		private String _name;
+		
+		protected PlayList(PLAYLISTID id, String location, String name) {
+			_id = id;
+			_location = location;
+			_name = name;
+		}
+		
+		protected PLAYLISTID getId() 	   { return _id; }
+		protected String	 getLocation() { return _location; }
+		protected String	 getName() 	   { return _name; }
+	}
 	
 	private enum PLAYLISTID {
 		VIP,
@@ -46,11 +62,13 @@ public class MainActivity extends Activity implements
 		SOURCE
 	}
 
+	private PlayList currentPlayList;
 	
 	/* UI */
 	private MenuItem playButton;
 	private TextView trackTime;
 	private ListView trackList;
+	private TextView nowPlaying;
 	private int selectedTrack;
 	
 	private SeekBar seekBarProgress;
@@ -88,6 +106,10 @@ public class MainActivity extends Activity implements
 		
 		public void setSelection(int pos) {
 			selection = pos;
+		}
+		
+		public String getSelection() {
+			return this.getItem(selection);
 		}
 		
 		@Override
@@ -155,6 +177,7 @@ public class MainActivity extends Activity implements
 		// UI Setup	
 		trackTime = (TextView) findViewById(R.id.music_time);
 		trackList = (ListView) findViewById(R.id.music_list);
+		nowPlaying = (TextView) findViewById(R.id.trackname);
 		selectedTrack = -1;
 		
 		seekBarProgress = (SeekBar) findViewById(R.id.seekbar);
@@ -167,8 +190,7 @@ public class MainActivity extends Activity implements
 		trackList.setOnItemClickListener(this);
 		
 		// Get URL list
-		playlistId = PLAYLISTID.VIP;
-		startNewPlaylist("Now Playing VIP original",PLAYLISTID.VIP,"http://vip.aersia.net/mu/");
+		startNewPlaylist("Now Playing VIP original", new PlayList(PLAYLISTID.VIP, "http://vip.aersia.net/mu/", "VIP"));
 	}
 	
 	@Override
@@ -200,31 +222,35 @@ public class MainActivity extends Activity implements
 	    		onPrevPress();
 	    		return true;
 	    	case R.id.playlist_vip:
-	    		if(playlistId != PLAYLISTID.VIP) {
+	    		if(currentPlayList.getId() != PLAYLISTID.VIP) {
 		    		startNewPlaylist("Now Playing VIP Original",
-		    				PLAYLISTID.VIP,
-		    				"http://vip.aersia.net/mu/");
+		    				new PlayList(PLAYLISTID.VIP,
+		    				"http://vip.aersia.net/mu/",
+		    				"VIP"));
 	    		}
 	    		return true;
 	    	case R.id.playlist_mellow:
-	    		if(playlistId != PLAYLISTID.MELLOW) {
+	    		if(currentPlayList.getId() != PLAYLISTID.MELLOW) {
 	    			startNewPlaylist("Now Playing VIP Mellow",
-	    					PLAYLISTID.MELLOW,
-	    					"http://vip.aersia.net/mu/mellow/");
+	    					new PlayList(PLAYLISTID.MELLOW,
+	    					"http://vip.aersia.net/mu/mellow/",
+	    					"VIP Mellow"));
 	    		}
 	    		return true;
 	    	case R.id.playlist_exiled:
-	    		if(playlistId != PLAYLISTID.EXILED) {
+	    		if(currentPlayList.getId() != PLAYLISTID.EXILED) {
 	    			startNewPlaylist("Now Playing VIP Exiled",
-	    					PLAYLISTID.EXILED,
-	    					"http://vip.aersia.net/mu/exiled/");
+	    					new PlayList(PLAYLISTID.EXILED,
+	    					"http://vip.aersia.net/mu/exiled/",
+	    					"VIP Exiled"));
 	    		}
 	    		return true;
 	    	case R.id.playlist_source:
-	    		if(playlistId != PLAYLISTID.SOURCE) {
+	    		if(currentPlayList.getId() != PLAYLISTID.SOURCE) {
 	    			startNewPlaylist("Now Playing VIP Source",
-	    					PLAYLISTID.SOURCE,
-	    					"http://vip.aersia.net/mu/source/");
+	    					new PlayList(PLAYLISTID.SOURCE,
+	    					"http://vip.aersia.net/mu/source/",
+	    					"VIP Source"));
 	    		}
 	    		return true;
 	        default:
@@ -399,6 +425,8 @@ public class MainActivity extends Activity implements
 		musicListAdapter.setSelection(selectedTrack);
 		musicListAdapter.notifyDataSetChanged();
 		
+		nowPlaying.setText(musicListAdapter.getSelection());
+		
 		// scroll to selected
 		trackList.smoothScrollToPositionFromTop(selectedTrack,0,1000);
 	}
@@ -411,14 +439,15 @@ public class MainActivity extends Activity implements
 		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
 	}
 
-	private void startNewPlaylist(String msg, PLAYLISTID id, String loc) {
+	private void startNewPlaylist(String msg, PlayList pl) {
 		mp.stop();
-		playlistId = id;
+		currentPlayList = pl;
 		// Get URL list
 		MagicLinkParser mlp = new MagicLinkParser();
 		mlp.setOnComplexMediaUpdateListener(this);
-		mlp.parse(loc);
+		mlp.parse(pl.getLocation());
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+		getActionBar().setTitle(pl.getName());
 	}
 
 

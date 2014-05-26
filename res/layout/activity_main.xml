@@ -6,30 +6,30 @@
     tools:context=".MainActivity"
     android:background="@color/seekbar_background" >
 
+    <TextView android:id="@+id/trackname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:gravity="center"
+        style="@style/NowPlaying"/>
     
-    <ListView android:id="@+id/music_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/music_list_bg">
-        
-    </ListView>
-    <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/music_controls_bg"
         android:orientation="horizontal" >
         
-	    <SeekBar 
+	    <SeekBar
 	        android:id="@+id/seekbar"
 	        android:layout_width="0dp"
+	        android:layout_height="20dp"
+	        android:layout_margin="5dp"
 	        android:layout_weight="1"
-	        android:layout_height="10dp"
-	        android:layout_margin="10dp"
 	        android:progressDrawable="@drawable/progressbar"
-	        android:thumb="@drawable/seekbar_thumb"
-	        android:thumbOffset="0dp"/>
-            
+	        android:thumb="@null" />
         
         <TextView android:id="@+id/music_time"
             android:layout_width="wrap_content"
@@ -40,5 +40,12 @@
             style="@style/Controls"/>
         
     </LinearLayout>
+    
+    <ListView android:id="@+id/music_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/music_list_bg">
+    </ListView>
     
 </LinearLayout>
