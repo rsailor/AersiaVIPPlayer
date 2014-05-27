@@ -431,6 +431,18 @@ public class MainActivity extends Activity implements
 		nowPlaying.setText(musicListAdapter.getSelection());
 		
 		// scroll to selected
+		int currentPosition = trackList.getFirstVisiblePosition();
+		int positionDifference = selectedTrack - currentPosition;
+		// To prevent excess scrolling, skip some if track position different is large
+		int delta = 80; // TODO: figure this out programmatically
+		if(Math.abs(positionDifference) >= delta) {
+			// If we move up, 
+			if(positionDifference < 0) {
+				trackList.setSelection(selectedTrack + delta);
+			} else {
+				trackList.setSelection(selectedTrack - delta);
+			}
+		}
 		trackList.smoothScrollToPositionFromTop(selectedTrack,0,1000);
 	}
 	
