@@ -28,7 +28,11 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	private MusicFile[] music;
 	private int currentSelection;
 	private boolean shuffle;
+	
+	private boolean seekRequired;
 	private int seekTime;
+	
+	private int trackTotalTime;
 	
 	private STATE state;
 	
@@ -107,6 +111,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 		// Property Setup
 		currentSelection = -1;
 		shuffle = true;
+		seekRequired = false;
 		seekTime = -1;
 	}
 	
@@ -135,12 +140,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	}
 	
 	public int getTrackTotalTime() {
-		if(state == STATE.PREPARED || state == STATE.STARTED || state == STATE.PAUSED 
-				|| state == STATE.PLAYBACK_COMPLETE || state == STATE.STOPPED) {
-			return mp.getDuration();
-		} else {
-			return 0;
-		}
+		return this.trackTotalTime;
 	}
 	
 	public int getTrackCurrentTime() {
@@ -277,6 +277,7 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	public void playThisAndSeek(int index,int time) {
 		if(index >= 0 && index < music.length && music.length > 0) {
 			beginStream(index);
+			seekRequired = true;
 			seekTime = time;
 		}
 	}
@@ -361,10 +362,11 @@ public class ComplexMediaPlayer implements OnCompletionListener, OnPreparedListe
 	@Override
 	public void onPrepared(MediaPlayer arg0) {
 		state = STATE.PREPARED;
+		trackTotalTime = mp.getDuration();
 		play();
-		if(seekTime > 0) {
+		if(seekRequired) {
 			seekTo(seekTime);
-			seekTime = -1;
+			seekRequired = false;
 		}
 		mpListener.onComplexMediaPlayerBeginStream();
 	}

@@ -59,6 +59,7 @@ public final class R {
         public static final int playlist_source=0x7f09000a;
         public static final int playlist_vip=0x7f090007;
         public static final int seekbar=0x7f090001;
+        public static final int take_screenshot=0x7f09000b;
         public static final int trackname=0x7f090000;
     }
     public static final class layout {
