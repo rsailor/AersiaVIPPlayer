@@ -201,6 +201,12 @@ public class MainActivity extends Activity implements
 	}
 	
 	@Override
+	public void finish() { // TODO: I want to remove this
+		trackTimeHandler.removeCallbacks(r);
+		super.finish();
+	}
+	
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		trackTimeHandler.removeCallbacks(r);
@@ -449,8 +455,10 @@ public class MainActivity extends Activity implements
 		if(Math.abs(positionDifference) >= delta) {
 			// If we move up, 
 			if(positionDifference < 0) {
+				trackList.smoothScrollByOffset(-10);
 				trackList.setSelection(selectedTrack + delta);
 			} else {
+				trackList.smoothScrollByOffset(10);
 				trackList.setSelection(selectedTrack - delta);
 			}
 		}
