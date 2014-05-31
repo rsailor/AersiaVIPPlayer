@@ -34,10 +34,5 @@
         android:id="@+id/playlist_source"
         android:showAsAction="never"
         android:title="@string/playlist_source"/>
-    
-    <item
-        android:id="@+id/take_screenshot"
-        android:showAsAction="never"
-        android:title="Capture"/>
 
 </menu>

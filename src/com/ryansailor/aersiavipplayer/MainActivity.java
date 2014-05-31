@@ -1,7 +1,5 @@
 package com.ryansailor.aersiavipplayer;
 
-import java.util.Calendar;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
@@ -12,7 +10,6 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +30,6 @@ public class MainActivity extends Activity implements
 
 	/* Debug */
 	public final static String TAG = "AersiaVIPPlayer";
-	private ScreenShotCamera sscam;
 	
 	
 	/* Media Player */
@@ -195,9 +191,6 @@ public class MainActivity extends Activity implements
 		
 		// Get URL list
 		startNewPlaylist("Now Playing VIP original", new PlayList(PLAYLISTID.VIP, "http://vip.aersia.net/mu/", "VIP"));
-		
-		// ScreenShotCamera
-		sscam = new ScreenShotCamera("AVP Screenshots");
 	}
 	
 	@Override
@@ -259,10 +252,6 @@ public class MainActivity extends Activity implements
 	    					"http://vip.aersia.net/mu/source/",
 	    					"VIP Source"));
 	    		}
-	    		return true;
-	    	/* TAKE SCREENSHOT */
-	    	case R.id.take_screenshot:
-	    		sscam.capture(getWindow().getDecorView().getRootView(), "screenshot" + Calendar.getInstance().getTimeInMillis());
 	    		return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
