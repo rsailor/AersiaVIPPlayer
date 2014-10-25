@@ -33,11 +33,11 @@ public class MainActivity extends Activity implements
 	
 	
 	/* Media Player */
-	private ComplexMediaPlayer mp;
-	private int trackCurrentTime;
+	private VIPMediaPlayer mp;
+	private int trackCurrentTime; 
 	
 	
-	/* Play List */
+	/* Play List */ // TODO: Move to controller
 	private class PlayList {
 		
 		private PLAYLISTID _id;
@@ -55,14 +55,14 @@ public class MainActivity extends Activity implements
 		protected String	 getName() 	   { return _name; }
 	}
 	
-	private enum PLAYLISTID {
+	private enum PLAYLISTID { // TODO: Move to controller
 		VIP,
 		MELLOW,
 		EXILED,
 		SOURCE
 	}
 
-	private PlayList currentPlayList;
+	private PlayList currentPlayList; // TODO: Move to controller
 	
 	/* UI */
 	private MenuItem playButton;
@@ -72,16 +72,16 @@ public class MainActivity extends Activity implements
 	private int selectedTrack;
 	
 	private SeekBar seekBarProgress;
-	private final Handler seekHandler = new Handler();
+	private final Handler seekHandler = new Handler(); 
 	
 	/* Notification */
 	Notification notification;
 	
 	/* System Services */
-	AudioManager audioManager;
+	AudioManager audioManager; // TODO: Move to controller
 	
 	/* Data */
-	String[] parsedMusicPaths;
+	String[] parsedMusicPaths; // TODO: Move to controller
 	
 	
 	/*
@@ -132,7 +132,7 @@ public class MainActivity extends Activity implements
 	
 	SelectionArrayAdapter musicListAdapter;
 	
-	private Handler trackTimeHandler = new Handler(Looper.getMainLooper());
+	private Handler trackTimeHandler = new Handler(Looper.getMainLooper()); // TODO: Move to controller
 	private final Runnable r = new Runnable() {
 		public void run() {
 			int cursecs = mp.getTrackCurrentTime()/1000;
@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements
 		setContentView(R.layout.activity_main);
 
 		// Build Media Player
-		mp = new ComplexMediaPlayer();
+		mp = new VIPMediaPlayer();
 		
 		mp.setOnComplexMediaPlayerListener(this);
 		mp.setOnBufferingUpdateListener(this);
@@ -215,7 +215,11 @@ public class MainActivity extends Activity implements
 		return true;
 	}
 	
-	public boolean onOptionsItemSelected(MenuItem item) {
+	
+	// TODO: Move as much of this as possible to controller
+	// This will become the main set of methods corresponding to inputs
+	// that send messages to the controller.
+	public boolean onOptionsItemSelected(MenuItem item) { 
 		// Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	    	case R.id.action_play:
@@ -285,7 +289,7 @@ public class MainActivity extends Activity implements
 	 * 
 	 * 
 	 */
-	
+	// TODO: Move all to controller
 	public void setPlay() {
 		trackTimeHandler.removeCallbacks(r);
 		mp.play();
@@ -338,21 +342,21 @@ public class MainActivity extends Activity implements
 		setUIPlay();
 	}
 	
-	@Override
-	public void onMagicLinkParserReady(String[] results) {
+	@Override 
+	public void onMagicLinkParserReady(String[] results) { // TODO: Move to controller
 		parsedMusicPaths = results;
 		mp.loadURLs(results);
 	}
 	
 	@Override
-	public void onComplexMediaPlayerBeginStream() {
+	public void onComplexMediaPlayerBeginStream() { // TODO: Move to controller
 		updateUINowPlaying();
 		trackTimeHandler.post(r);
 		primarySeekBarProgressUpdater();
 	}
 	
 	@Override
-	public void onComplexMediaPlayerLoaded() {
+	public void onComplexMediaPlayerLoaded() { // TODO: Move to controller
 		musicListAdapter.clear();
 		musicListAdapter.addAll(mp.getMusicNames());
 		
@@ -373,12 +377,12 @@ public class MainActivity extends Activity implements
 	}
 	
 	@Override
-	public void onBufferingUpdate(MediaPlayer mp, int percent) {
+	public void onBufferingUpdate(MediaPlayer mp, int percent) { // TODO: Move to controller
 		seekBarProgress.setSecondaryProgress(percent);
 	}
 
 	@Override
-	public void onAudioFocusChange(int focusChange) {
+	public void onAudioFocusChange(int focusChange) { // TODO: Move to controller
 		switch(focusChange) {
 			case AudioManager.AUDIOFOCUS_GAIN:
 				// Restore resources and resume playback
@@ -414,7 +418,7 @@ public class MainActivity extends Activity implements
 	 * 
 	 * 
 	 */
-	
+	// TODO: Move to controller
 	private void primarySeekBarProgressUpdater() {
 		seekBarProgress.setProgress((int)(((float)mp.getTrackCurrentTime()/mp.getTrackTotalTime())*100));
 		if (mp.isPlaying()) {
@@ -427,7 +431,7 @@ public class MainActivity extends Activity implements
 		}
 	}
 	
-	private void updateUINowPlaying() {
+	private void updateUINowPlaying() { // TODO: Move to controller
 
 		// update selected and change color
 		selectedTrack = mp.getNowPlayingIndex();
@@ -454,7 +458,7 @@ public class MainActivity extends Activity implements
 		trackList.smoothScrollToPositionFromTop(selectedTrack,0,1000);
 	}
 	
-	private void setUIPlay() {
+	private void setUIPlay() { 
 		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_pause));
 	}
 	
@@ -462,7 +466,7 @@ public class MainActivity extends Activity implements
 		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
 	}
 
-	private void startNewPlaylist(String msg, PlayList pl) {
+	private void startNewPlaylist(String msg, PlayList pl) {// TODO: Move to controller
 		mp.stop();
 		currentPlayList = pl;
 		// Get URL list
@@ -473,6 +477,41 @@ public class MainActivity extends Activity implements
 		getActionBar().setTitle(pl.getName());
 	}
 
-
+	/*
+	 * 
+	 * 
+	 * UI INTERFACE
+	 * 
+	 * 
+	 */
+	
+	public void setPlay() {
+		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_pause));
+	}
+	
+	public void setPause() {
+		playButton.setIcon(getResources().getDrawable(R.drawable.ic_action_play));
+	}
+	
+	public void setTrackTime(int seconds) {
+		
+	}
+	
+	public void setTrackBar(int percent) {
+		
+	}
+	
+	public void setTotalTrackTime(int seconds) {
+		
+	}
+	
+	public void selectTrackIndex(int index) {
+		
+	}
+	
+	public void fillTrackList(String[] trackList) {
+		
+	}
+	
 	
 }
