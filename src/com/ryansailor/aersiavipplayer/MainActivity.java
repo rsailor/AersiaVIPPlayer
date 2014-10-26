@@ -3,6 +3,7 @@ package com.ryansailor.aersiavipplayer;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -511,6 +512,26 @@ public class MainActivity extends Activity implements
 	
 	public void fillTrackList(String[] trackList) {
 		
+	}
+	
+	/*
+	 * 
+	 * 
+	 * CONTROLLER ACTIONS
+	 * 
+	 * 
+	 */
+	
+	public void startMusicService(String url, String title) {
+		Intent intent = new Intent(getApplicationContext(), VIPMediaService.class);
+		intent.putExtra("url", url);
+		intent.putExtra("songTitle", title);
+		startService(intent);
+	}
+	
+	public void stopMusicService() {
+		Intent intent = new Intent(getApplicationContext(), VIPMediaService.class);
+		stopService(intent);
 	}
 	
 	

@@ -20,10 +20,8 @@ public class VIPMediaPlayer implements OnCompletionListener, OnPreparedListener,
 	
 	private final String TAG = "ComplexMediaPlayer";
 	
-	private MediaPlayer mp;
-	
 	private OnComplexMediaPlayerListener mpListener;
-	
+
 	private String parentPath;
 	private MusicFile[] music;
 	private int currentSelection;
@@ -33,20 +31,6 @@ public class VIPMediaPlayer implements OnCompletionListener, OnPreparedListener,
 	private int seekTime;
 	
 	private int trackTotalTime;
-	
-	private STATE state;
-	
-	enum STATE {
-		IDLE,
-		INITIALIZED,
-		PREPARED,
-		STARTED,
-		STOPPED,
-		PAUSED,
-		PLAYBACK_COMPLETE,
-		PREPARING,
-		NULL
-	}
 	
 	protected class MusicFile {
 		private String path;
@@ -221,6 +205,8 @@ public class VIPMediaPlayer implements OnCompletionListener, OnPreparedListener,
 	/*
 	 * PLAYBACK CONTROL
 	 */
+	
+
 	
 	public void play() {
 		if(state == STATE.PREPARED || state == STATE.STARTED

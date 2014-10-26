@@ -10,6 +10,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -25,7 +26,6 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
     private MediaPlayer mMediaPlayer = null;    // The Media Player
     private int mBufferPosition;
     private static String mSongTitle;
-    private static String mSongPicUrl;
 	
     NotificationManager mNotificationManager;
     Builder mNotificationBuilder = null;
@@ -57,6 +57,9 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
 	
 	@Override
 	public int onStartCommand(Intent intent, int flag, int startId) {
+		Bundle extras = intent.getExtras();
+		mUrl = extras.getString("url");
+		mSongTitle = extras.getString("songTitle");
 		if (intent.getAction().equals(ACTION_PLAY)) {
 			mMediaPlayer = new MediaPlayer();
 			mMediaPlayer.setOnPreparedListener(this);
@@ -136,6 +139,13 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
             updateNotification(mSongTitle + "(playing)");
         }
     }
+    
+    public void stopMusic() {
+    	if (mState.equals(State.Playing)) {
+    		mMediaPlayer.stop();
+    		
+    	}
+    }
 
     public boolean isPlaying() {
         if (mState.equals(State.Playing)) {
@@ -172,18 +182,13 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
         return mInstance;
     }
 
-    public static void setSong(String url, String title, String songPicUrl) {
+    public static void setSong(String url, String title) {
         mUrl = url;
         mSongTitle = title;
-        mSongPicUrl = songPicUrl;
     }
 
     public String getSongTitle() {
         return mSongTitle;
-    }
-
-    public String getSongPicUrl() {
-        return mSongPicUrl;
     }
 
     @Override
