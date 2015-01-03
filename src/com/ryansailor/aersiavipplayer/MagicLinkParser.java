@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
 public class MagicLinkParser {
@@ -20,6 +21,12 @@ public class MagicLinkParser {
 	private final int TIMEOUTMILLIS = 5000;
 	
 	private OnMagicLinkParserReadyListener updateListener;
+	
+	public interface OnMagicLinkParserReadyListener {
+
+		public void onMagicLinkParserReady(String[] results);
+		
+	}
 	
 	private class GetURLsTask extends AsyncTask<String, Void, Document> {
 		
@@ -70,6 +77,10 @@ public class MagicLinkParser {
 	
 	public void setOnComplexMediaUpdateListener(OnMagicLinkParserReadyListener listener) {
 		updateListener = listener;
+	}
+	
+	public String extractFileName(String path) {
+		return Uri.parse(path).getLastPathSegment().toString();
 	}
 	
 }

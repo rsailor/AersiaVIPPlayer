@@ -10,8 +10,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 public class VIPMediaService extends Service implements MediaPlayer.OnPreparedListener, 
@@ -44,6 +46,12 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
 	
 	State mState = State.Retrieving;
 	
+	public class MusicBinder extends Binder {
+	    VIPMediaService getService() {
+	        return VIPMediaService.this;
+	    }
+	}
+	
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -61,37 +69,43 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
 		mUrl = extras.getString("url");
 		mSongTitle = extras.getString("songTitle");
 		if (intent.getAction().equals(ACTION_PLAY)) {
-			mMediaPlayer = new MediaPlayer();
-			mMediaPlayer.setOnPreparedListener(this);
-			mMediaPlayer.setOnErrorListener(this);
-			mMediaPlayer.setOnBufferingUpdateListener(this);
-			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			initMediaPlayer();
 		}
 		return START_STICKY;
 	}
 	
 	private void initMediaPlayer() {
+		mMediaPlayer = new MediaPlayer();
+		mMediaPlayer.setOnPreparedListener(this);
+		mMediaPlayer.setOnErrorListener(this);
+		mMediaPlayer.setOnBufferingUpdateListener(this);
+		mMediaPlayer.setWakeMode(getApplicationContext(),
+				PowerManager.PARTIAL_WAKE_LOCK);
+		mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+	}
+	
+	private void startAndPrepareMediaPlayer() {
 		try {
 			mMediaPlayer.setDataSource(mUrl);
 		} catch (IllegalArgumentException e) {
-            Log.e(LOG_TAG, "initMediaPlayer", e);
+            Log.e(LOG_TAG, "startMediaPlayer", e);
         } catch (IllegalStateException e) {
-        	Log.e(LOG_TAG, "initMediaPlayer", e);
+        	Log.e(LOG_TAG, "startMediaPlayer", e);
         } catch (IOException e) {
-        	Log.e(LOG_TAG, "initMediaPlayer", e);
+        	Log.e(LOG_TAG, "startMediaPlayer", e);
         }
 		
 		try {
             mMediaPlayer.prepareAsync(); // prepare async to not block main thread
         } catch (IllegalStateException e) {
-        	Log.e(LOG_TAG, "initMediaPlayer", e);
+        	Log.e(LOG_TAG, "startMediaPlayer", e);
         }
         mState = State.Preparing;
 	}
 	
 	public void restartMusic() {
         mMediaPlayer.stop();
+        mMediaPlayer.reset();
         mMediaPlayer.start();
     }
 
@@ -143,7 +157,7 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
     public void stopMusic() {
     	if (mState.equals(State.Playing)) {
     		mMediaPlayer.stop();
-    		
+    		mNotificationManager.cancel(NOTIFICATION_ID);
     	}
     }
 
@@ -215,6 +229,7 @@ public class VIPMediaService extends Service implements MediaPlayer.OnPreparedLi
         mNotificationBuilder = new Notification.Builder(getApplicationContext())
         	.setContentTitle(getText(R.string.app_name))
         	.setContentText(text)
+        	.setSmallIcon(R.drawable.ic_launcher)
         	.setContentIntent(pi)
         	.setOngoing(true);
         // mNotification.icon = R.drawable.ic_mshuffle_icon;
