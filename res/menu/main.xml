@@ -1,24 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
-<!--     <item android:id="@+id/action_play" -->
-<!--         android:showAsAction="always" -->
-<!--         android:icon="@drawable/ic_action_play" -->
-<!--         android:title="@string/music_play" /> -->
+    <item android:id="@+id/action_play"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_play"
+        android:title="@string/music_play" />
     
-<!--     <item android:id="@+id/action_prev" -->
-<!--         android:showAsAction="always" -->
-<!--         android:icon="@drawable/ic_action_previous" -->
-<!--         android:title="@string/music_prev" /> -->
+    <item android:id="@+id/action_prev"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_previous"
+        android:title="@string/music_prev" />
     
-<!--     <item android:id="@+id/action_next" -->
-<!--         android:showAsAction="always" -->
-<!--         android:icon="@drawable/ic_action_next" -->
-<!--         android:title="@string/music_next" /> -->
-    
-    <item
-        android:id="@+id/action_shuffle"
-        android:showAsAction="never"
-        android:title="@string/action_shuffle" />
+    <item android:id="@+id/action_next"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_next"
+        android:title="@string/music_next" />
     
     <item 
         android:id="@+id/playlist_vip"
@@ -39,5 +34,10 @@
         android:id="@+id/playlist_source"
         android:showAsAction="never"
         android:title="@string/playlist_source"/>
+    
+    <item
+        android:id="@+id/action_end"
+        android:showAsAction="never"
+        android:title="@string/action_end" />
 
 </menu>

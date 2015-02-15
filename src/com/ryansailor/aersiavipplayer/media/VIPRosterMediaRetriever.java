@@ -1,7 +1,7 @@
 package com.ryansailor.aersiavipplayer.media;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import android.os.AsyncTask;
@@ -51,7 +52,7 @@ public class VIPRosterMediaRetriever extends MediaRetriever {
 		Document dom = null;
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			dom = db.parse(url);
+			dom = db.parse(new InputSource(new URL(url).openStream()));
 		} catch(ParserConfigurationException pce) {
 			pce.printStackTrace();
 		} catch(SAXException se) {
@@ -67,7 +68,7 @@ public class VIPRosterMediaRetriever extends MediaRetriever {
 	}
 	
 	private ArrayList<Media> resolveTracks(Element root) {
-		NodeList tracklist = root.getElementsByTagName("trackList");
+		NodeList tracklist = root.getElementsByTagName("track");
 		ArrayList<Media> mediaList = new ArrayList<Media>();
 		if(tracklist != null && tracklist.getLength() > 0) {
 			for(int i = 0; i < tracklist.getLength(); i++) {

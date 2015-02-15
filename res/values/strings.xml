@@ -3,7 +3,7 @@
 
     <string name="app_name">Aersia VIP Player</string>
     <string name="action_settings">Settings</string>
-    <string name="action_quit">Quit</string>
+    <string name="action_end">Quit</string>
     <string name="action_shuffle">Shuffle</string>
     <string name="playlist_vip">VIP</string>
     <string name="playlist_mellow">VIP Mellow</string>
