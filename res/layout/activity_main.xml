@@ -31,13 +31,33 @@
 	        android:progressDrawable="@drawable/progressbar"
 	        android:thumb="@null" />
         
-        <TextView android:id="@+id/music_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/music_time"
-            android:textColor="@color/track_time_text"
-            style="@style/Controls"/>
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_margin="5dp" >
+	        <TextView android:id="@+id/music_time"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/music_time_zero"
+	            android:textColor="@color/track_time_text"
+	            style="@style/Controls"/>
+	        
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/music_time_delimeter"
+	            android:textColor="@color/track_time_text"
+	            style="@style/Controls" />
+	        
+	        <TextView android:id="@+id/music_time_total"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/music_time_zero"
+	            android:textColor="@color/track_time_text"
+	            style="@style/Controls"/>
+	    </LinearLayout>
+        
         
     </LinearLayout>
     
