@@ -107,6 +107,13 @@ public class MainActivity extends Activity implements MediaRetrieverObserver,
 	}
 	
 	@Override
+	protected void onRestart() {
+		super.onRestart();
+		if(mediaService.isPlaying())
+			poller.start();
+	}
+	
+	@Override
 	protected void onStop() {
 	  poller.halt();
 	  super.onStop();
